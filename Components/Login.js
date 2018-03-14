@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {  StyleSheet,Image } from 'react-native';
 import * as LoginService from '../Services/LoginService.js';
-//import { Card, Button, FormLabel, FormInput } from "react-native-elements";
-import {View, TextInput, Text, Button} from 'react-native-ui-lib';
+import { Card, Button, FormLabel, FormInput } from "react-native-elements";
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -28,7 +27,7 @@ export default class Login extends React.Component {
 
     render() {
         return (
-            <View flex paddingH-25 paddingT-120>
+            /*<View flex paddingH-25 paddingT-120>
                 <Image
                     style={{width: 50, height: 50}}
                     source={require('../Images/logo.png')}
@@ -39,9 +38,9 @@ export default class Login extends React.Component {
                 <View marginT-100 center>
                     <Button onPress={this.userLogin} text70 white background-orange30 label="Login"/>
                 </View>
-            </View>
+            </View>*/
 
-            /*<View>
+            <View>
                 <Card >
                     <FormLabel>Gebruikersnaam</FormLabel>
                     <FormInput onChangeText={(username) => {this.setState({'username': username})}} placeholder="Gebruiksernaam..." />
@@ -55,7 +54,7 @@ export default class Login extends React.Component {
                         onPress={this.userLogin}
                     />
                 </Card>
-            </View>*/
+            </View>
         )
     }
 }

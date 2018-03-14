@@ -12,6 +12,7 @@ import CompositionDetails from './Components/Library/CompositionDetails.js';
 import InstrumentDetails from './Components/Library/InstrumentDetails.js';
 import Profile from './Components/Profile.js';
 import * as LoginService from './Services/LoginService.js';
+import PlayPartituur from "./Components/Partituur/PlayPartituur";
 
 //Ingelogd
 const HomeStack = StackNavigator({
@@ -107,6 +108,13 @@ const TabNav = TabNavigator({
         screen: ProfileStack,
         navigationOptions: {
             tabBarLabel: 'Profile',
+            tabBarIcon: ({ tintColor }) => <MaterialIcons name='account-circle' size={26} style={{ color: tintColor }} />
+        },
+    },
+    Partituur : {
+        screen: PlayPartituur,
+        navigationOptions: {
+            tabBarLabel: 'Partituur',
             tabBarIcon: ({ tintColor }) => <MaterialIcons name='account-circle' size={26} style={{ color: tintColor }} />
         },
     }
