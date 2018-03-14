@@ -1,57 +1,76 @@
-import React, {Component} from 'react';
-import stl from '../Css/stylesheet';
-import { AppRegistry, StyleSheet, Modal, Image, Platform } from 'react-native';
-import { Spinner, Text, View, Content, Container, Header, Title,Subtitle, Button, Icon, InputGroup, Input, ListItem, List, Radio, CheckBox, Thumbnail, Card, CardItem, H3,Left, Right,Body } from 'native-base';
+import React from 'react';
+import { ScrollView,StyleSheet} from 'react-native';
+//import { Card, CardTitle, CardContent, CardAction, CardButton, CardImage } from 'react-native-material-cards'
+import {View, Assets, Constants, Card, Button, Colors, Typography, Text} from 'react-native-ui-lib'; //eslint-disable-line
 
 export default class HomeScreen extends React.Component {
-    render(){
-        return(
-            <Container style={styles.container}>
-                <Header style={stl.header}>
-                    <Body style={stl.headerstyle}>
-                    <Title>Home</Title>
-                    </Body>
-                </Header>
-                <Content contentContainerStyle={styles.content} >
-                    <Card style={{flex: 0}}>
-                        <CardItem>
-                            <Left>
-                                <Thumbnail source={{uri: 'https://publicdomainvectors.org/photos/revolverByJoan.png'}} />
-                                <Body>
-                                <Text>NativeBase</Text>
-                                <Text note>Datum</Text>
-                                </Body>
-                            </Left>
-                        </CardItem>
-                        <CardItem>
-                            <Body>
-                            <Image source={{uri: 'https://publicdomainvectors.org/photos/revolverByJoan.png'}} style={{height: 200, width: 200, flex: 1}}/>
-                            <Text>
-                                Nieuw bericht blablablablablabla...
+
+    render() {
+        return (
+            <ScrollView contentContainerStyle={styles.container}>
+                <Card row height={160} containerStyle={{marginBottom: 15}} onPress={() => {}}>
+                    <Card.Section body>
+                        <Card.Section>
+                            <Text text70 dark10>
+                                Les gaat niet door
                             </Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem>
-                            <Left>
-                                <Button transparent textStyle={{color: '#87838B'}}>
-                                    <Icon name="logo-github" />
-                                    <Text>Read more</Text>
-                                </Button>
-                            </Left>
-                        </CardItem>
-                    </Card>
-                </Content>
-            </Container>
-        )
+                        </Card.Section>
+                        <Card.Section>
+                            <Text text80 dark10>
+                                De les van 23 maart gaat niet door wegens dood
+                            </Text>
+                        </Card.Section>
+                        <Card.Section footer>
+                            <Text text90 dark50>
+                                Admin
+                            </Text>
+                        </Card.Section>
+                    </Card.Section>
+                </Card>
+
+                <Card shadowType="white10" row height={160} containerStyle={{marginBottom: 15}} onPress={() => {}} br10>
+                    <Card.Section body>
+                        <Card.Section>
+                            <Text text70 dark10>
+                                You’re Invited!
+                            </Text>
+                        </Card.Section>
+                        <Card.Section>
+                            <Text text80 dark10>
+                                Join Old The Town Barbershop Official Store. Download the Wix app to...
+                            </Text>
+                        </Card.Section>
+                        <Card.Section footer>
+                            <Text text90 dark50>
+                                wix.to/A465c
+                            </Text>
+                        </Card.Section>
+                    </Card.Section>
+                </Card>
+
+                <Card containerStyle={{marginBottom: 15}} onPress={() => {}}>
+                    <Card.Section body>
+                        <Card.Section>
+                            <Text text70 dark10>
+                                You’re Invited!
+                            </Text>
+                        </Card.Section>
+                        <Card.Section footer>
+                            <Text text90 dark50>
+                                join now
+                            </Text>
+                        </Card.Section>
+                    </Card.Section>
+                </Card>
+
+
+            </ScrollView>
+        );
     }
 }
-
-const styles = {
+const styles = StyleSheet.create({
     container: {
-
+        padding: 15,
+        backgroundColor: Colors.white,
     },
-    content: {
-        display: "flex",
-        flex: 1
-    }
-};
+});

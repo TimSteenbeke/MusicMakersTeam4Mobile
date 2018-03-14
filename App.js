@@ -1,85 +1,175 @@
-import React, { Component } from "react";
-import { Root,Text ,Header,Title,Content,Footer,Button,FooterTab,Icon,View} from "native-base";
-import { Font, AppLoading } from "expo";
-import Homescreen from './Components/HomeScreen';
-import Chatscreen from './Components/ChatScreen';
-import Agendascreen from './Components/AgendaScreen';
-import Bibtest from './Components/BibTest';
-import stl from './Css/stylesheet';
+import React from 'react';
+import {Button} from 'react-native';
+import { StyleSheet, Text, View ,TouchableOpacity} from 'react-native';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import {StackNavigator,TabNavigator,TabBarBottom} from 'react-navigation';
+import HomeScreen from './Components/HomeScreen.js';
+import AgendaScreen from './Components/AgendaScreen.js';
+import LibraryScreen from './Components/LibraryScreen.js';
+import ChatScreen from './Components/ChatScreen.js';
+import LoginScreen from './Components/Login.js';
+import CompositionDetails from './Components/Library/CompositionDetails.js';
+import InstrumentDetails from './Components/Library/InstrumentDetails.js';
+import Profile from './Components/Profile.js';
+import * as LoginService from './Services/LoginService.js';
 
-export default class App extends React.Component {
+//Ingelogd
+const HomeStack = StackNavigator({
+    Home: {
+        screen: HomeScreen,
+        navigationOptions: (props) => ({
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            title: 'Home',
+        })
+    }
+});
+
+const AgendaStack = StackNavigator({
+    Agenda: {
+        screen: AgendaScreen,
+        navigationOptions: (props) => ({
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            title: "Agenda",
+        })
+    }
+});
+
+const LibraryStack = StackNavigator({
+    Library: {
+        screen: LibraryScreen,
+    },
+    CompositionDetails: {
+        screen: CompositionDetails,
+        navigationOptions: (props) => ({
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            title: "Details",
+        })
+    },
+    InstrumentDetails: {
+        screen: InstrumentDetails,
+        navigationOptions: (props) => ({
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            title: "InstrumentDetails",
+        })
+    }
+});
+
+const ChatStack = StackNavigator({
+    Chat: {
+        screen: ChatScreen,
+        navigationOptions: (props) => ({
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            title: "Chat",
+        })
+    }
+});
+
+const ProfileStack = StackNavigator({
+    Profile: {
+        screen: Profile,
+        navigationOptions: (props) => ({
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            title: "Profiel",
+        })
+    }
+});
+
+const TabNav = TabNavigator({
+    Home: {
+        screen: HomeStack,
+        navigationOptions: {
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ tintColor }) => <MaterialIcons name='home' size={26} style={{ color: tintColor }} />
+        },
+    },
+    Agenda: {
+        screen: AgendaStack,
+        navigationOptions: {
+            tabBarLabel: 'Agenda',
+            tabBarIcon: ({ tintColor }) => <MaterialIcons name='schedule' size={26} style={{ color: tintColor }} />
+        },
+    },
+    Library: {
+        screen: LibraryStack,
+        navigationOptions: {
+            tabBarLabel: 'Bib',
+            tabBarIcon: ({ tintColor }) => <MaterialIcons name='local-library' size={26} style={{ color: tintColor }} />
+        },
+    },
+    Chat: {
+        screen: ChatStack,
+        navigationOptions: {
+            tabBarLabel: 'Chatt',
+            tabBarIcon: ({ tintColor }) => <MaterialIcons name='chat' size={26} style={{ color: tintColor }} />
+        },
+    },
+    Profile: {
+        screen: ProfileStack,
+        navigationOptions: {
+            tabBarLabel: 'Profile',
+            tabBarIcon: ({ tintColor }) => <MaterialIcons name='account-circle' size={26} style={{ color: tintColor }} />
+        },
+    }
+}, {
+    tabBarOptions: {
+        activeTintColor: '#222',
+        showIcon: true,
+        showLabel: false
+    },
+    tabBarPosition: 'bottom',
+});
+
+export const createRootNavigator = (signedIn = false) => {
+    return StackNavigator(
+        {
+            SignedIn: {
+                screen: TabNav,
+                navigationOptions: {
+                    gesturesEnabled: false
+                }
+            },
+            SignedOut: {
+                screen: LoginScreen,
+                navigationOptions: {
+                    gesturesEnabled: false
+                }
+            }
+        },
+        {
+            headerMode: "none",
+            mode: "modal",
+            initialRouteName: signedIn ? "SignedIn" : "SignedOut"
+        }
+    );
+};
+
+class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { loading: true ,index: 0};
+
+        this.state = {
+            signedIn: false,
+            checkedSignIn: false
+        };
     }
 
-    switchScreen(index) {
-        this.setState({index: index})
-    }
-
-    async componentWillMount() {
-        await Font.loadAsync({
-            Roboto: require("native-base/Fonts/Roboto.ttf"),
-            Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-        });
-        this.setState({ loading: false });
+    componentWillMount() {
+        LoginService.isSignedIn()
+            .then(res => this.setState({ signedIn: res, checkedSignIn: true }))
+            .catch(err => alert("An error occurred"));
     }
 
     render() {
-        let AppComponent = null;
+        const { checkedSignIn, signedIn } = this.state;
 
-        if(this.state.index == 0){
-            AppComponent = Homescreen;
-        }
-        else if(this.state.index == 1) {
-            AppComponent = Agendascreen;
-        }else if(this.state.index == 2) {
-            AppComponent = Bibtest;
-        } else {
-            AppComponent = Chatscreen;
+        // If we haven't checked AsyncStorage yet, don't render anything (better ways to do this)
+        if (!checkedSignIn) {
+            return null;
         }
 
-
-        if (this.state.loading) {
-            return (
-                <Root>
-                    <AppLoading />
-                </Root>
-            );
-        }
-        return (
-            <View style={styles.container}>
-                <AppComponent/>
-                <Footer >
-                    <FooterTab style={{backgroundColor:"#DD2C00"}}>
-                    <Button  onPress={() => this.switchScreen(0) }><Icon style={{color:"#fff"}} name="home" /><Text style={{color:"#fff"}}>Home</Text></Button>
-                    <Button onPress={() => this.switchScreen(1) }><Icon style={{color:"#fff"}} name="calendar" /><Text style={{color:"#fff"}}>Agenda</Text></Button>
-                    <Button onPress={() => this.switchScreen(2) }><Icon style={{color:"#fff"}} name="book" /><Text style={{color:"#fff"}}>Library</Text></Button>
-                    <Button onPress={() => this.switchScreen(3) }><Icon style={{color:"#fff"}} name="ios-chatboxes" /><Text style={{color:"#fff"}}>Chat</Text></Button>
-                    </FooterTab>
-                </Footer>
-            </View>
-        );
+        const Layout = createRootNavigator(signedIn);
+        return <Layout />;
     }
 }
 
-const styles = {
-    container: {
-        flex: 1,
-        marginTop: Expo.Constants.statusBarHeight
-    },
-    navbar: {
-        backgroundColor: '#fff',
-        borderBottomColor: '#eee',
-        borderColor: 'transparent',
-        borderWidth: 1
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'grey',
-    },
-    innerContainer: {
-        alignItems: 'center',
-    },
-};
+export default App;

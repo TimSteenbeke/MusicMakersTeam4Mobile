@@ -1,29 +1,44 @@
-import React, {Component} from 'react';
-import { Text, View,FlatList,Header,Left,Icon,Body,Title,Right,Container,Content,StyleSheet,Tabs,Tab} from 'native-base';
-import stl from '../Css/stylesheet';
-import PrivateChat from "./Chat/PrivateChat";
-import Groupchat from "./Chat/GroupChat";
-import Testchat from './TestChat';
+import React from 'react';
+import { Button,View, Text,StyleSheet } from 'react-native';
+import { GiftedChat } from 'react-native-gifted-chat'
 
 export default class ChatScreen extends React.Component {
-    render(){
-        return(
-<Testchat/>
+    state = {
+        messages: [],
+    };
+
+    componentWillMount() {
+        this.setState({
+            messages: [
+                {
+                    _id: 1,
+                    text: 'Hello developer',
+                    createdAt: new Date(),
+                    user: {
+                        _id: 2,
+                        name: 'React Native',
+                        avatar: 'https://facebook.github.io/react/img/logo_og.png',
+                    },
+                },
+            ],
+        })
+    }
+
+    onSend(messages = []) {
+        this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, messages),
+        }))
+    }
+
+    render() {
+        return (
+            <GiftedChat
+                messages={this.state.messages}
+                onSend={messages => this.onSend(messages)}
+                user={{
+                    _id: 1,
+                }}
+            />
         )
     }
 }
-
-const styles = {
-    container: {
-
-    },
-    header: {
-        paddingRight: 15,
-        paddingLeft: 15
-    },
-    content: {
-        display: "flex",
-        flex: 1,
-        justifyContent: "center"
-    }
-};

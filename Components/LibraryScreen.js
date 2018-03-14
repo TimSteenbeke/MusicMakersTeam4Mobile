@@ -1,90 +1,130 @@
-import React, {Component} from 'react';
-import { Text, View,Header,Left,Icon,Body,Title,Right,Container,Content,StyleSheet} from 'native-base';
-import { List, ListItem,SearchBar } from "react-native-elements";
-import { FlatList } from "react-native";
-import stl from '../Css/stylesheet';
+import React from 'react';
+import { View,StyleSheet,Button,Modal, Text, TouchableHighlight,Image } from 'react-native';
+import { Container, Header, Content, ListItem, Radio, Right } from 'native-base';
+import Compositions from './Library/Compositions.js';
+import Instruments from './Library/Instruments.js';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 
-export default class LibraryScreen extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
+class LibraryScreen extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            instrumenten: []
-        };
+            radio1 : true,
+            check1: false,
+            modalVisible: false,
+            optionsModal: false,
+            search: 'Library',
+            selectedItem: undefined,
+            results: [],
+            visiblescreen:1,
+            itemSelected: 'itemOne'
+        }
     }
 
-    renderHeader = () => {
-        return <SearchBar placeholder="Type Here..." lightTheme round />;
+    static navigationOptions = ({navigation}) => {
+
+        const {params} = navigation.state;
+
+        return {
+            title: "Bib",
+            headerTitleStyle: {textAlign: 'center', alignSelf:'center',flex:1},
+            headerRight: (
+                <MaterialIcons onPress = {() => params.handleSave && params.handleSave()} name='home' size={26} style={{ color: "black" }} />
+            ) }
     };
 
-    getInstrumentenFromBackend() {
-        return fetch("http://musicmaker-api-team4.herokuapp.com/api/instruments", { mode: 'cors'})
-            .then((response) =>
-                response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-                return responseJson;
-            })
-            .catch((err) => {
-                console.log("geen response");
-                console.log(err);
-            });
+
+    saveDetails = () => {
+        console.log('Details');
+    };
+
+    componentDidMount () {
+        this.props.navigation.setParams({handleSave: () => this.setModalVisible(true)});
     }
 
-    componentDidMount() {
-        this.getInstrumentenFromBackend().then(instrumenten => {
-            this.setState({instrumenten: instrumenten});
-        });
-    }
+    setModalVisible = (visible) => {
+        this.setState({modalVisible: visible});
+    };
 
     render() {
-        return (
-            <Container style={styles.container}>
-                <Header style={styles.header}>
-                    <Left style={{flex:1}}>
-                    </Left>
-                    <Body style={{flex:1}}>
-                    <Title>Lib</Title>
-                    </Body>
-                    <Right style={{flex:1}}>
-                        <Icon name='md-options' />
-                    </Right>
-                </Header>
-                <Content contentContainerStyle={styles.content} >
-                    <List>
-                        <FlatList
-                            data={this.state.instrumenten}
-                            renderItem={({ item }) => (
+        const that = this;
 
-                                <ListItem
-                                    roundAvatar
-                                    title={`${item.naam}`}
-                                    subtitle={"In"}
-                                />
-                            )}
-                            ListHeaderComponent={this.renderHeader}
-                            keyExtractor={item => item.naam}
-                        />
-                    </List>
+        const instruments = <Instruments navigation={this.props.navigation}/>;
+        const compositions = <Compositions navigation={this.props.navigation}/>;
+        const accords = <Compositions navigation={this.props.navigation}/>;
+
+        let screen;
+
+        if (this.state.itemSelected === 'itemOne') {
+            screen = instruments
+        } else if (this.state.itemSelected === 'itemTwo') {
+            screen = compositions
+        } else {
+            screen = accords
+        }
+
+        return (
+            <View style={{
+                flexDirection: "row",
+            }}>
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                        alert('Modal has been closed.');
+                    }}>
+                    <View style={{marginTop: 22}}>
+                        <View>
+                            <ListItem>
+                                <Text>Instrumenten</Text>
+                                <Right>
+                                    <Radio onPress={() => this.setState({ itemSelected: 'itemOne' })}
+                                           selected={this.state.itemSelected == 'itemOne'}
+                                    />
+                                </Right>
+                            </ListItem>
+                            <ListItem>
+                                <Text>Muziekstukken</Text>
+                                <Right>
+                                    <Radio onPress={() => this.setState({ itemSelected: 'itemTwo' })}
+                                           selected={this.state.itemSelected == 'itemTwo' }
+                                    />
+                                </Right>
+                            </ListItem>
+                            <ListItem>
+                                <Text>Akkoorden</Text>
+                                <Right>
+                                    <Radio onPress={() => this.setState({ itemSelected: 'itemThree' })}
+                                           selected={this.state.itemSelected == 'itemThree' }
+                                    />
+                                </Right>
+                            </ListItem>
+
+                            <Button title="Back" onPress={() => {
+                                this.setModalVisible(!this.state.modalVisible);
+                            }}/>
+
+                        </View>
+                    </View>
+                </Modal>
+                <Content>
+                    {screen}
                 </Content>
-            </Container>
-        );
+            </View>
+
+
+        )
     }
 }
 
-const styles = {
+const styles = StyleSheet.create({
     container: {
-
-    },
-    header: {
-        paddingRight: 15,
-        paddingLeft: 15
-    },
-    content: {
-        display: "flex",
-        flex: 1
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
-};
+});
 
-
+export default LibraryScreen;

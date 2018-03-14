@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/NativeBase.iml" filepath="$PROJECT_DIR$/.idea/NativeBase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MusicMakers.iml" filepath="$PROJECT_DIR$/.idea/MusicMakers.iml" />
     </modules>
   </component>
 </project>
