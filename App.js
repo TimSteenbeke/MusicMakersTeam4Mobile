@@ -1,25 +1,26 @@
 import React from 'react';
-import {Button} from 'react-native';
-import { StyleSheet, Text, View ,TouchableOpacity} from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import {StackNavigator,TabNavigator,TabBarBottom} from 'react-navigation';
+import { MaterialIcons } from '@expo/vector-icons';
+import {StackNavigator,TabNavigator} from 'react-navigation';
 import HomeScreen from './Components/HomeScreen.js';
 import AgendaScreen from './Components/AgendaScreen.js';
 import LibraryScreen from './Components/LibraryScreen.js';
-import ChatScreen from './Components/ChatScreen.js';
 import LoginScreen from './Components/Login.js';
 import CompositionDetails from './Components/Library/CompositionDetails.js';
 import InstrumentDetails from './Components/Library/InstrumentDetails.js';
 import Profile from './Components/Profile.js';
 import * as LoginService from './Services/LoginService.js';
+import GroupDetails from "./Components/Groups/GroupDetails";
 
-//Ingelogd
+//Logged in screens
 const HomeStack = StackNavigator({
     Home: {
         screen: HomeScreen,
         navigationOptions: (props) => ({
-            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1,color:'white'},
             title: 'Home',
+            headerStyle: {
+                backgroundColor: '#242728',
+            },
         })
     }
 });
@@ -28,8 +29,11 @@ const AgendaStack = StackNavigator({
     Agenda: {
         screen: AgendaScreen,
         navigationOptions: (props) => ({
-            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1,color:'white'},
             title: "Agenda",
+            headerStyle: {
+                backgroundColor: '#242728',
+            },
         })
     }
 });
@@ -37,30 +41,15 @@ const AgendaStack = StackNavigator({
 const LibraryStack = StackNavigator({
     Library: {
         screen: LibraryScreen,
+        headerStyle: {
+            backgroundColor: '#242728',
+        },
     },
     CompositionDetails: {
         screen: CompositionDetails,
-        navigationOptions: (props) => ({
-            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
-            title: "Details",
-        })
     },
     InstrumentDetails: {
         screen: InstrumentDetails,
-        navigationOptions: (props) => ({
-            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
-            title: "InstrumentDetails",
-        })
-    }
-});
-
-const ChatStack = StackNavigator({
-    Chat: {
-        screen: ChatScreen,
-        navigationOptions: (props) => ({
-            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
-            title: "Chat",
-        })
     }
 });
 
@@ -68,9 +57,15 @@ const ProfileStack = StackNavigator({
     Profile: {
         screen: Profile,
         navigationOptions: (props) => ({
-            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1},
+            headerTitleStyle: {textAlign:'center', alignSelf:'center',flex:1,color:'white'},
             title: "Profiel",
+            headerStyle: {
+                backgroundColor: '#242728',
+            },
         })
+    },
+    GroupDetails: {
+        screen: GroupDetails,
     }
 });
 
@@ -96,13 +91,6 @@ const TabNav = TabNavigator({
             tabBarIcon: ({ tintColor }) => <MaterialIcons name='local-library' size={26} style={{ color: tintColor }} />
         },
     },
-    Chat: {
-        screen: ChatStack,
-        navigationOptions: {
-            tabBarLabel: 'Chatt',
-            tabBarIcon: ({ tintColor }) => <MaterialIcons name='chat' size={26} style={{ color: tintColor }} />
-        },
-    },
     Profile: {
         screen: ProfileStack,
         navigationOptions: {
@@ -112,9 +100,13 @@ const TabNav = TabNavigator({
     }
 }, {
     tabBarOptions: {
-        activeTintColor: '#222',
+        activeTintColor: 'white',
+        inactiveTintColor: 'white',
         showIcon: true,
-        showLabel: false
+        showLabel: false,
+        style: {
+            backgroundColor: '#242728',
+        }
     },
     tabBarPosition: 'bottom',
 });

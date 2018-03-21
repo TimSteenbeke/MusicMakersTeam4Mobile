@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { View, Text, FlatList } from "react-native";
 import { List, ListItem } from "react-native-elements";
-import * as CompositionService from "../../Services/CompositionService.js";
+import * as GroupService from "../Services/GroupService";
 
-class Compositions extends React.Component {
+export default class Groups extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             loading: false,
-            compositions: [],
+            groups: [],
             page: 1,
             seed: 1,
             error: null,
@@ -18,14 +18,13 @@ class Compositions extends React.Component {
     }
 
     componentDidMount() {
-        CompositionService.getCompositionsFromBackend().then(compositions => {
+        GroupService.getGroupsByUser().then(groups => {
             this.setState({
-                compositions: compositions,
+                groups: groups,
                 loading: false,
                 refreshing: false
             });
         });
-
     }
 
     render() {
@@ -34,25 +33,22 @@ class Compositions extends React.Component {
         return (
             <List>
                 <FlatList
-                    data={this.state.compositions}
+                    data={this.state.groups}
                     renderItem={({ item }) => (
                         <ListItem
-                            key={item.compositionId}
                             roundAvatar
-                            title={`${item.title}`}
-                            subtitle={item.artist}
+                            title={`${item.name}`}
                             onPress={() => {
-                                navigate('CompositionDetails', {
-                                    compositionId: item.compositionId
+                                navigate('GroupDetails', {
+                                    groupId: item.groupid
                                 });
                             }}
                         />
                     )}
-                    keyExtractor={item => item.compositionId}
+                    keyExtractor={item => item.groupid}
                 />
             </List>
         );
     }
 }
 
-export default Compositions;

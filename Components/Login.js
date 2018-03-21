@@ -1,69 +1,106 @@
 import React, { Component } from 'react';
-import {  StyleSheet,Image } from 'react-native';
+import {  StyleSheet,Image,View,Text } from 'react-native';
 import * as LoginService from '../Services/LoginService.js';
-//import { Card, Button, FormLabel, FormInput } from "react-native-elements";
-import {View, TextInput, Text, Button} from 'react-native-ui-lib';
+import { Card, Button, FormLabel, FormInput } from "react-native-elements";
+import t from 'tcomb-form-native';
+
+const Form = t.form.Form;
+
+const Account = t.struct({
+    username: t.String,
+    password: t.String
+});
+
+const options = {
+    auto: 'placeholders',
+    fields: {
+        username: {
+            error: 'Geef een gebruiksernaam in'
+        },
+        password: {
+            error: 'Geef een wachtoord in'
+        }
+    }
+};
 
 export default class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            usernameError: '',
             failLogin: false,
             redirect: false,
-            username: "",
-            password: ""
+            username: 'tim',
+            password: 'tim'
         }
     }
 
+
     userLogin = () => {
-        let user = this.state.username;
-        let pass = this.state.password;
-        const res = LoginService.userLogin(user, pass);
-        console.log("resultt: " + res);
-
-        console.log("restultt2: " + LoginService.checkToken());
-
-        this.props.navigation.navigate("SignedIn");
+        const value = this.refs.form.getValue();
+        if (value) {
+            let user = value.username;
+            let pass = value.password;
+            console.log(user  + " " + pass);
+            const res = LoginService.userLogin(user, pass);
+            this.props.navigation.navigate("SignedIn");
+        }
     };
 
     render() {
         return (
-            <View flex paddingH-25 paddingT-120>
-                <Image
-                    style={{width: 50, height: 50}}
-                    source={require('../Images/logo.png')}
-                />
-                <Text blue50 text20 center>Welkom</Text>
-                <TextInput style={{textAlign: 'center'}} onChangeText={(username) => {this.setState({'username': username})}} text50 placeholder="Gebruikersnaam" dark10/>
-                <TextInput style={{textAlign: 'center'}} onChangeText={(password) => {this.setState({'password': password})}} text50 placeholder="Wachtwoord" secureTextEntry dark10/>
-                <View marginT-100 center>
-                    <Button onPress={this.userLogin} text70 white background-orange30 label="Login"/>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+            }}>
+                <View style={{height: 200,alignItems: 'center'}}>
+                    <Image
+                        source={require('../Images/logo.png')}
+                    />
                 </View>
-            </View>
-
-            /*<View>
-                <Card >
-                    <FormLabel>Gebruikersnaam</FormLabel>
-                    <FormInput onChangeText={(username) => {this.setState({'username': username})}} placeholder="Gebruiksernaam..." />
-                    <FormLabel>Wachtwoord</FormLabel>
-                    <FormInput onChangeText={(password) => {this.setState({'password': password})}}  secureTextEntry placeholder="Wachtwoord..." />
-
+                <View style={styles.container}>
+                    <Form
+                        ref="form"
+                        type={Account}
+                        options={options}
+                    />
                     <Button
-                        buttonStyle={{ marginTop: 20 }}
-                        backgroundColor="#03A9F4"
+                        buttonStyle={{ marginTop: 20,backgroundColor:'#dd2c00'}}
+                        backgroundColor="#dd2c00"
                         title="LOG IN"
                         onPress={this.userLogin}
                     />
-                </Card>
-            </View>*/
+                </View>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        marginTop: 20,
+        padding: 20
+    },
+    title: {
+        fontSize: 30,
+        alignSelf: 'center',
+        marginBottom: 30
+    },
+    buttonText: {
+        fontSize: 18,
+        color: 'white',
+        alignSelf: 'center'
+    },
+    button: {
+        height: 36,
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
+        alignSelf: 'stretch',
+        justifyContent: 'center'
     }
 });

@@ -1,10 +1,9 @@
 import React from 'react';
-import { View,StyleSheet,Button,Modal, Text, TouchableHighlight,Image } from 'react-native';
-import { Container, Header, Content, ListItem, Radio, Right } from 'native-base';
+import { View,StyleSheet,Modal,Button, Text, TouchableHighlight,Image,TouchableOpacity } from 'react-native';
+import { Container,Content, Header, ListItem, Radio, Right,Left } from 'native-base';
 import Compositions from './Library/Compositions.js';
 import Instruments from './Library/Instruments.js';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 class LibraryScreen extends React.Component {
     constructor(props) {
@@ -17,26 +16,26 @@ class LibraryScreen extends React.Component {
             search: 'Library',
             selectedItem: undefined,
             results: [],
+            visibleModal: null,
             visiblescreen:1,
-            itemSelected: 'itemOne'
+            itemSelected: 'Instrumenten',
         }
     }
 
     static navigationOptions = ({navigation}) => {
-
         const {params} = navigation.state;
 
         return {
-            title: "Bib",
-            headerTitleStyle: {textAlign: 'center', alignSelf:'center',flex:1},
+            title: "Bibliotheek",
+            headerTitleStyle: {textAlign: 'center', alignSelf:'center',flex:1,color:'white'},
             headerRight: (
-                <MaterialIcons onPress = {() => params.handleSave && params.handleSave()} name='home' size={26} style={{ color: "black" }} />
-            ) }
-    };
-
-
-    saveDetails = () => {
-        console.log('Details');
+                <MaterialIcons onPress = {() => params.handleSave && params.handleSave()} name='search' size={26} style={{ color: "white" }} />
+            ) ,
+            headerStyle: {
+                backgroundColor: '#242728',
+            },
+            headerLeft : (<View/>)
+        }
     };
 
     componentDidMount () {
@@ -48,61 +47,49 @@ class LibraryScreen extends React.Component {
     };
 
     render() {
-        const that = this;
-
         const instruments = <Instruments navigation={this.props.navigation}/>;
         const compositions = <Compositions navigation={this.props.navigation}/>;
-        const accords = <Compositions navigation={this.props.navigation}/>;
 
         let screen;
 
-        if (this.state.itemSelected === 'itemOne') {
+        if (this.state.itemSelected === 'Instrumenten') {
             screen = instruments
-        } else if (this.state.itemSelected === 'itemTwo') {
-            screen = compositions
         } else {
-            screen = accords
+            screen = compositions
         }
 
         return (
-            <View style={{
-                flexDirection: "row",
-            }}>
-                <Modal
+            <View style={styles.container}>
+               <Modal
                     animationType="slide"
                     transparent={false}
                     visible={this.state.modalVisible}
                     onRequestClose={() => {
                         alert('Modal has been closed.');
                     }}>
-                    <View style={{marginTop: 22}}>
+                    <View style={{margin:20}}>
                         <View>
                             <ListItem>
-                                <Text>Instrumenten</Text>
+                                <Left>
+                                    <Text>Instrumenten</Text>
+                                </Left>
                                 <Right>
-                                    <Radio onPress={() => this.setState({ itemSelected: 'itemOne' })}
-                                           selected={this.state.itemSelected == 'itemOne'}
+                                    <Radio onPress={() => this.setState({ itemSelected: 'Instrumenten' })}
+                                           selected={this.state.itemSelected === 'Instrumenten'}
                                     />
                                 </Right>
                             </ListItem>
                             <ListItem>
-                                <Text>Muziekstukken</Text>
+                                <Left>
+                                    <Text>Muziekstukken</Text>
+                                </Left>
                                 <Right>
-                                    <Radio onPress={() => this.setState({ itemSelected: 'itemTwo' })}
-                                           selected={this.state.itemSelected == 'itemTwo' }
+                                    <Radio onPress={() => this.setState({ itemSelected: 'Muziekstukken' })}
+                                           selected={this.state.itemSelected === 'Muziekstukken' }
                                     />
                                 </Right>
                             </ListItem>
-                            <ListItem>
-                                <Text>Akkoorden</Text>
-                                <Right>
-                                    <Radio onPress={() => this.setState({ itemSelected: 'itemThree' })}
-                                           selected={this.state.itemSelected == 'itemThree' }
-                                    />
-                                </Right>
-                            </ListItem>
-
-                            <Button title="Back" onPress={() => {
+                             <Button title="Ok" style={{marginTop:20}} onPress={() => {
                                 this.setModalVisible(!this.state.modalVisible);
                             }}/>
 
@@ -110,11 +97,14 @@ class LibraryScreen extends React.Component {
                     </View>
                 </Modal>
                 <Content>
+                    <View
+                        style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <Text style={{maxWidth:'50%',fontSize:20,marginTop:10}}>{this.state.itemSelected}</Text>
+
+                    </View>
                     {screen}
                 </Content>
             </View>
-
-
         )
     }
 }
@@ -122,9 +112,8 @@ class LibraryScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
+        backgroundColor: '#e3eeee'
+    },
 });
 
 export default LibraryScreen;

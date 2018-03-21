@@ -25,6 +25,9 @@ class Instruments extends React.Component {
                 refreshing: false
             });
         });
+        console.log(this.state.instruments);
+
+
     }
 
     render() {
@@ -36,18 +39,18 @@ class Instruments extends React.Component {
                     data={this.state.instruments}
                     renderItem={({ item }) => (
                         <ListItem
+                            key={item.instrumentid}
                             roundAvatar
-                            title={`${item.naam}`}
+                            title={`${item.instrumentname}`}
                             subtitle={item.type}
                             onPress={() => {
-                                /* 1. Navigate to the Details route with params */
                                 navigate('InstrumentDetails', {
-                                    instrumentId: item.instrumentId
+                                    instrumentId: item.instrumentid
                                 });
                             }}
                         />
                     )}
-                    keyExtractor={item => item.instrumentId}
+                    keyExtractor={item => item.instrumentid}
                 />
             </List>
         );

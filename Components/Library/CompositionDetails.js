@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { View, FlatList } from "react-native";
-import { List, ListItem } from "react-native-elements";
+import {StyleSheet,View} from 'react-native';
 import * as CompositionService from "../../Services/CompositionService.js";
 import { Container, Header, Content, Card, CardItem, Text, Body } from 'native-base';
 
@@ -10,7 +9,7 @@ class CompositionDetails extends React.Component {
 
         this.state = {
             loading: false,
-            titel: "",
+            title: "",
             artist: "",
             language: "",
             genre: "",
@@ -20,6 +19,20 @@ class CompositionDetails extends React.Component {
         };
     }
 
+    static navigationOptions = ({navigation}) => {
+        const {params} = navigation.state;
+
+        return {
+            title: "Muziekstuk details",
+            headerTitleStyle: {textAlign: 'center', alignSelf:'center',flex:1,color:'white'},
+            headerRight: (<View/>) ,
+            headerTintColor: 'white',
+            headerStyle: {
+                backgroundColor: '#242728',
+            },
+        }
+    };
+
     componentDidMount() {
         const { params } = this.props.navigation.state;
         const compositionId = params ? params.compositionId : null;
@@ -27,7 +40,7 @@ class CompositionDetails extends React.Component {
 
         CompositionService.getCompositionFromBackend(compositionId).then(composition => {
             this.setState({
-                titel: composition.titel,
+                title: composition.title,
                 artist: composition.artist,
                 language: composition.language,
                 genre: composition.genre,
@@ -35,7 +48,6 @@ class CompositionDetails extends React.Component {
                 fileFormat: composition.fileFormat,
                 link: composition.link,
                 loading: false
-
             });
         });
     }
@@ -45,96 +57,26 @@ class CompositionDetails extends React.Component {
             <Container>
                 <Content>
                 <Card>
-                    <CardItem header>
-                        <Text>Titel</Text>
+                    <CardItem header style={{alignItems:'center',flex:1,justifyContent:'center'}}>
+                        <Text style={{fontSize:20}}>{this.state.title} - {this.state.artist}</Text>
                     </CardItem>
                     <CardItem>
                         <Body>
-                        <Text>
-                            <Text>{this.state.titel}</Text>
+                        <Text style={styles.titleText}>Taal</Text>
+                        <Text style={styles.itemText}>
+                            {this.state.language}
                         </Text>
-                        </Body>
-                    </CardItem>
-                </Card>
-
-                <Card>
-                    <CardItem header>
-                        <Text>Artiest</Text>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                        <Text>
-                            <Text>{this.state.artist}</Text>
+                        <Text style={styles.titleText}>Genre</Text>
+                        <Text style={styles.itemText}>
+                            {this.state.genre}
                         </Text>
-                        </Body>
-                    </CardItem>
-                </Card>
-
-
-                <Card>
-                    <CardItem header>
-                        <Text>Taal</Text>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                        <Text>
-                            <Text>{this.state.language}</Text>
+                        <Text style={styles.titleText}>Onderwerp</Text>
+                        <Text style={styles.itemText}>
+                            {this.state.subject}
                         </Text>
-                        </Body>
-                    </CardItem>
-                </Card>
-
-
-                <Card>
-                    <CardItem header>
-                        <Text>Genre</Text>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                        <Text>
-                            <Text>{this.state.genre}</Text>
-                        </Text>
-                        </Body>
-                    </CardItem>
-                </Card>
-
-
-                <Card>
-                    <CardItem header>
-                        <Text>Onderwerp</Text>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                        <Text>
-                            <Text>{this.state.subject}</Text>
-                        </Text>
-                        </Body>
-                    </CardItem>
-                </Card>
-
-
-                <Card>
-                    <CardItem header>
-                        <Text>Bestand</Text>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                        <Text>
-                            <Text>{this.state.fileFormat}</Text>
-                        </Text>
-                        </Body>
-                    </CardItem>
-                </Card>
-
-
-                <Card>
-                    <CardItem header>
-                        <Text>Link</Text>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                        <Text>
-                            <Text>{this.state.link}</Text>
+                        <Text style={styles.titleText}>Link</Text>
+                        <Text style={styles.itemText}>
+                            {this.state.link}
                         </Text>
                         </Body>
                     </CardItem>
@@ -146,3 +88,16 @@ class CompositionDetails extends React.Component {
 }
 
 export default CompositionDetails;
+
+const styles = StyleSheet.create({
+    baseText: {
+        fontFamily: 'Cochin',
+    },
+    itemText :{
+        marginBottom: 10,
+    },
+    titleText: {
+        fontSize: 15,
+        fontWeight: 'bold',
+    },
+});

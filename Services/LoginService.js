@@ -11,34 +11,6 @@ export const onSignIn = (username,password) => {
     AsyncStorage.setItem(USER_KEY,"true");
 };
 
-/*export const onSignIn = (username,password) =>
-{
-    console.log("Username: " + username + " " + password);
-
-    fetch(URL + '?grant_type=password&username='+ username +'&password='+password, {
-        method: 'POST',
-        headers: {
-            'Authorization': AuthStr,
-            'Content-Type': 'application/json'
-        },
-        mode: "cors",
-    })
-        .then((response) =>
-            response.json()
-        )
-        .then((responseData) => {
-            console.log(responseData);
-            if (responseData.hasOwnProperty("access_token")) {
-                try {
-                    AsyncStorage.setItem(USER_KEY, JSON.stringify(responseData));
-                    console.log("Ok");
-                } catch (error) {
-                    // Error saving data
-                }
-            }
-        })
-    //AsyncStorage.setItem(USER_KEY, "true");
-};*/
 
 export const onSignOut = () => AsyncStorage.removeItem(USER_KEY);
 
@@ -50,6 +22,7 @@ export const isSignedIn = () => {
                 if (res !== null) {
                     resolve(true);
                 } else {
+                    AsyncStorage.removeItem('userToken');
                     resolve(false);
                 }
             })
@@ -84,18 +57,18 @@ export function userLogin(username, password) {
         .done();
 }
 
-export function checkToken(){
-    if(AsyncStorage.getItem('userToken')!== null){
+export function checkToken() {
+    if (AsyncStorage.getItem('userToken')!== null) {
         let jwt = AsyncStorage.getItem('userToken');
-        let current_time = Date.now() / 1000;
-        if ( jwt.exp < current_time) {
-            AsyncStorage.removeItem('userToken');
-            return false;
-        } else{
+        let current_time = Date.now();
+        console.log("curr time: ", current_time);
+        console.log('jwt.expires_in: ', jwt.expires_in);
+        if (jwt.expires_in > current_time) {
             return true;
         }
     }
-        return false;
+    AsyncStorage.removeItem('userToken');
+    return false;
 }
 
 

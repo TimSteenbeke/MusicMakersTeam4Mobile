@@ -1,76 +1,70 @@
 import React from 'react';
-import { ScrollView,StyleSheet} from 'react-native';
-//import { Card, CardTitle, CardContent, CardAction, CardButton, CardImage } from 'react-native-material-cards'
-import {View, Assets, Constants, Card, Button, Colors, Typography, Text} from 'react-native-ui-lib'; //eslint-disable-line
+import { ScrollView,StyleSheet,Image} from 'react-native';
+import * as NewsItemService from '../Services/NewsItemService';
+import { Container, Header, Content, Card, CardItem, Text, Body,View } from 'native-base';
+import MomentJs from 'moment';
+import {Divider} from 'react-native-elements';
+
+import {RkCard} from 'react-native-ui-kitten';
 
 export default class HomeScreen extends React.Component {
 
+    constructor(props){
+        super(props);
+        this.state = {
+            value: 1,
+            redirect:true,
+            newsitems: [],
+        }
+    }
+
+    componentDidMount(){
+            NewsItemService.getNewsItemsFromBackend().then(newsitems => {
+                this.setState({newsitems: newsitems});
+            });
+    }
+
+    newsItemList() {
+
+        return this.state.newsitems.map((item) => {
+            return (
+                <RkCard  key={item.newsItemId}>
+                    <View rkCardHeader>
+                        <Text style={{fontSize:20,fontWeight:'bold' }}>{item.title}</Text>
+                    </View>
+                    <Divider style={{ backgroundColor: 'gray' }} />
+                    {
+                        item.messageImage !== null ? <Image style={{padding:10}} rkCardImg source={{uri: `data:image/gif;base64,${item.messageImage}`}} /> : <Image style={{margin:10}} rkCardImg source={require('../Images/guitar.jpg')}/>
+                    }
+                    <Divider style={{ backgroundColor: 'gray' }} />
+                    <View rkCardContent>
+                        <Text>{item.message}</Text>
+                    </View>
+                    <View rkCardFooter>
+                        <Text style={{fontSize:10}}>{MomentJs(item.date).utc().format('YYYY-MM-DD')} - {item.editor}</Text>
+                    </View>
+                </RkCard>
+            )
+        });
+    }
+
     render() {
         return (
-            <ScrollView contentContainerStyle={styles.container}>
-                <Card row height={160} containerStyle={{marginBottom: 15}} onPress={() => {}}>
-                    <Card.Section body>
-                        <Card.Section>
-                            <Text text70 dark10>
-                                Les gaat niet door
-                            </Text>
-                        </Card.Section>
-                        <Card.Section>
-                            <Text text80 dark10>
-                                De les van 23 maart gaat niet door wegens dood
-                            </Text>
-                        </Card.Section>
-                        <Card.Section footer>
-                            <Text text90 dark50>
-                                Admin
-                            </Text>
-                        </Card.Section>
-                    </Card.Section>
-                </Card>
+            <Container>
+                <Content>
+                    <ScrollView style={{margin:10}}>
+                        {this.newsItemList()}
+                    </ScrollView>
+                </Content>
+            </Container>
 
-                <Card shadowType="white10" row height={160} containerStyle={{marginBottom: 15}} onPress={() => {}} br10>
-                    <Card.Section body>
-                        <Card.Section>
-                            <Text text70 dark10>
-                                You’re Invited!
-                            </Text>
-                        </Card.Section>
-                        <Card.Section>
-                            <Text text80 dark10>
-                                Join Old The Town Barbershop Official Store. Download the Wix app to...
-                            </Text>
-                        </Card.Section>
-                        <Card.Section footer>
-                            <Text text90 dark50>
-                                wix.to/A465c
-                            </Text>
-                        </Card.Section>
-                    </Card.Section>
-                </Card>
-
-                <Card containerStyle={{marginBottom: 15}} onPress={() => {}}>
-                    <Card.Section body>
-                        <Card.Section>
-                            <Text text70 dark10>
-                                You’re Invited!
-                            </Text>
-                        </Card.Section>
-                        <Card.Section footer>
-                            <Text text90 dark50>
-                                join now
-                            </Text>
-                        </Card.Section>
-                    </Card.Section>
-                </Card>
-
-
-            </ScrollView>
-        );
+        )
     }
 }
+
 const styles = StyleSheet.create({
     container: {
         padding: 15,
-        backgroundColor: Colors.white,
+        backgroundColor: "white",
     },
 });

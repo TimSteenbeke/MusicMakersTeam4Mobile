@@ -21,37 +21,24 @@ export default class AgendaScreen extends React.Component {
         AgendaService.getMyAgenda().then(agendaItems => {
             this.mapAgendaItems(agendaItems)
         });
+
     }
 
     render() {
         return (
             <Agenda
                 items={this.state.items}
-                //loadItemsForMonth={this.loadItems.bind(this)}
-                selected={'2018-03-13'}
+                selected={'2018-03-20'}
                 renderItem={AgendaScreen.renderItem.bind(this)}
                 renderEmptyDate={AgendaScreen.renderEmptyDate.bind(this)}
                 rowHasChanged={AgendaScreen.rowHasChanged.bind(this)}
-                // markingType={'period'}
-                // markedDates={{
-                //    '2017-05-08': {textColor: '#666'},
-                //    '2017-05-09': {textColor: '#666'},
-                //    '2017-05-14': {startingDay: true, endingDay: true, color: 'blue'},
-                //    '2017-05-21': {startingDay: true, color: 'blue'},
-                //    '2017-05-22': {endingDay: true, color: 'gray'},
-                //    '2017-05-24': {startingDay: true, color: 'gray'},
-                //    '2017-05-25': {color: 'gray'},
-                //    '2017-05-26': {endingDay: true, color: 'gray'}}}
-                // monthFormat={'yyyy'}
-                //theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
-                //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
             />
         );
     }
 
     static renderItem(item) {
         return (
-            <View style={[styles.item, {height: item.height}]}><Text>{item.name}</Text></View>
+            <View style={[styles.item, {height: item.height}]}><Text>{item.name}</Text><Text>{item.type}</Text><Text>{item.date}</Text></View>
         );
     }
 
@@ -75,20 +62,17 @@ export default class AgendaScreen extends React.Component {
             setTimeout(() => {
 
                 let dte = new Date();
-                console.log("dte: " + dte.getTime());
 
                 for(let i = -15 ; i < 50 ; i++){
                     const time = dte.getTime() + i * 24 * 60 * 60 * 1000;
                     const strTime = AgendaScreen.timeToString(time);
-                    console.log("strTime: " + strTime);
 
                     if (!this.state.items[strTime]) {
-                        console.log("create");
                         this.state.items[strTime] = [];
 
                         for (let i= 0; i < agendaItems.lessons.length; i++) {
                             let les = {
-                                name: "Les coming soon (relatie ligt nog niet)",
+                                name: agendaItems.lessons[x].description,
                                 startDateTime: AgendaScreen.timeToString(new Date(agendaItems.lessons[i].startDateTime)),
                                 type: 'Les',
                             };
@@ -105,7 +89,7 @@ export default class AgendaScreen extends React.Component {
 
                         for (let x= 0; x < agendaItems.performances.length; x++) {
                             let optreden = {
-                                name: agendaItems.performances[x].beschrijving,
+                                name: agendaItems.performances[x].description,
                                 startDateTime: AgendaScreen.timeToString(new Date(agendaItems.performances[x].startDateTime)),
                                 type: 'Optreden'
                             };
@@ -114,43 +98,15 @@ export default class AgendaScreen extends React.Component {
 
                             if(strTime2 === strTime){
                                 this.state.items[strTime].push({
-                                    name: optreden.name + " - " + optreden.type,
+                                    name: optreden.name,
+                                    type: optreden.type,
+                                    date: optreden.startDateTime,
                                     height: Math.max(50, 50)
                                 });
                             }
                         }
-
-                        console.log("einde " + this.state.items[strTime].length);
-
                     }
-
                 }
-
-
-
-                /*for (let x= 0; x < agendaItems.performances.length; x++) {
-                    let optreden = {
-                        name: agendaItems.performances[x].beschrijving,
-                        startDateTime: AgendaScreen.timeToString(new Date(agendaItems.performances[x].startDateTime)),
-                        type: 'Optreden'
-                    };
-
-                    const strTime = optreden.startDateTime;
-
-                    if (!this.state.items[strTime]) {
-                        this.state.items[strTime] = [];
-                        this.state.items[strTime].push({
-                            name: optreden.name + " - " + optreden.type,
-                            height: Math.max(50, Math.floor(Math.random() * 150))
-                        });
-                    } else {
-                        this.state.items[strTime].push({
-                            name: optreden.name + " - " + optreden.type,
-                            height: Math.max(50, Math.floor(Math.random() * 150))
-                        });
-                    }
-                }*/
-
 
                 //console.log(this.state.items);
                 const newItems = {};
@@ -158,32 +114,9 @@ export default class AgendaScreen extends React.Component {
                 this.setState({
                     items: newItems
                 });
-
-
             }, 1000);
 
-            console.log("kleir");
-
-            //Over lessons loopen en info in AgendaItem steken
-            //type en basic info
-
-
-            //over performances loopen en info in AgendaItem steken
-            //type en basic info
-            /*for (let x= 0; x < agendaItems.performances.length; x++) {
-                let optreden = {
-                    _id: guid(),
-                    id: agendaItems.performances[x].performanceId,
-                    name: agendaItems.performances[x].beschrijving,
-                    startDateTime: new Date(agendaItems.performances[x].startDateTime),
-                    endDateTime: new Date(agendaItems.performances[x].endDateTime),
-                    type: 'Optreden',
-                    classes: 'color-2'
-                };
-                AgendaItems.push(optreden);
-            }*/
         }
-
     };
 }
 
@@ -191,6 +124,8 @@ const styles = StyleSheet.create({
     item: {
         backgroundColor: 'white',
         flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         borderRadius: 5,
         padding: 10,
         marginRight: 10,
